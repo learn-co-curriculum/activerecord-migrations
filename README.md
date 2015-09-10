@@ -90,7 +90,7 @@ This file is requiring the gems in our Gemfile and giving our program access to 
 
 Before we run  `rake db:migrate`
 
-4) Take a look at `cat.rb`. Let's create an Artist class.
+4) Take a look at `cat.rb`. Let's create an Cat class.
 
 ```ruby
 # cat.rb
