@@ -68,6 +68,73 @@ Here we've added the create_table method, and passed the name of the table we wa
 
 
 
+## Using migrations to manipulate existing tables
+
+Here is another place where migrations really shine. Let's add a gender column to our cats table. Remember that ActiveRecord keeps track of what migrations we've already run, so adding it to our 01_create_cats.rb won't work because it won't get executed when we run our migrations again, unless we drop our entire table before rerunning the migration. But that isn't best practices, especially with a production database.
+
+To make this change we're going to need a new migration, which we'll call `02_add_gender_to_cats.rb`.
+
+```ruby
+# db/migrate/02_add_gender_to_cats.rb
+
+class AddGenderToCats < ActiveRecord::Migration
+  def up
+    add_column :cats, :gender, :string
+  end
+  
+  def down
+    remove_column :cats, :gender 
+  end
+end
+```
+
+Pretty awesome, right? We basically just told ActiveRecord to add a column to the artists table, call it gender, and it's going to be a string.
+
+Notice how we incremented the number in the file name there? Imagine for a minute that you deleted your original database and wanted to execute the migrations again. ActiveRecord is going to execute each file, but it has to do so in some order and it happens to do that in alpha-numerical order. If we didn't have the numbers, our add_column migration would have tried to run first ('a' comes before 'c') and our artists table wouldn't have even been created yet! So we used some numbers to make sure they execute in order. In reality our two-digit system is very rudimentary. As you'll see later on, frameworks like rails have generators that create migrations with very accurate timestamps so you'll never have that problem.
+
+Now that you've save the migration, back to the terminal to run it:
+
+`rake db:migrate`
+
+Awesome! Now go back to the console: `rake console`
+
+and check it out:
+
+```ruby
+Artist.column_names
+#=> ["id", "name", "genre", "age", "hometown", "gender"]
+```
+
+Great!
+
+Nope- wait. Word just came down from the boss- you weren't supposed to ship that change yet! OH NO! No worries, we'll rollback to the first migration.
+
+Run `rake -T`. Which command should we use?
+
+`rake db:rollback`
+
+Then double check:
+
+
+```ruby
+Artist.column_names
+#=> ["id", "name", "genre", "age", "hometown"]
+```
+
+Oh good, your job is saved. Thanks ActiveRecord! Now when the boss says it's actually time to add that column, you can just run it again!
+
+`rake db:migrate`
+
+
+
+
+
+
+
+
+
+
+
 ### Running Migrations
 
 The simplest way to run our migrations is with ActiveRecord's through a raketask that we're given through the activerecord gem. By running `rake -T` we can access these.
