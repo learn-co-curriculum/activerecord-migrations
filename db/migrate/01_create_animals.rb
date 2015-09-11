@@ -1,6 +1,6 @@
-class CreateCats < ActiveRecord::Migration
+class CreateAnimals < ActiveRecord::Migration
   def up
-    create_table :cats do |t|
+    create_table :animals do |t|
       t.string :name
       t.integer :age
       t.integer :breed
@@ -8,6 +8,6 @@ class CreateCats < ActiveRecord::Migration
   end
 
   def down
-    drop_table :cats
+    drop_table :animals
   end
 end

@@ -19,12 +19,12 @@ Executed migrations are tracked by ActiveRecord in your database, so they aren't
 Code along: 
 
 1. Let's start with creating a directory called `db`. Within the `db` directory, create a `migrate` directory.
-2. In the `migrate` directory, create a file called `01_create_cats.rb` (we'll talk about why we added the 01 later).
+2. In the `migrate` directory, create a file called `01_create_animals.rb` (we'll talk about why we added the 01 later).
 
 ```ruby
-# db/migrate/01_create_cats.rb
+# db/migrate/01_create_animals.rb
 
-class CreateCats < ActiveRecord::Migration
+class CreateAnimals < ActiveRecord::Migration
   def up
   end
 
@@ -33,28 +33,28 @@ class CreateCats < ActiveRecord::Migration
 end
 ```
 
-Here we're creating a class called `CreateCats` which inherits from ActiveRecord's `ActiveRecord::Migration` module. Within the class we have an `up` method to define what code to execute when the migration is run, and in the `down` method we define what code to execute when the migration is rolled back. Think of it like "do" and "undo."
+Here we're creating a class called `CreateAnimals` which inherits from ActiveRecord's `ActiveRecord::Migration` module. Within the class we have an `up` method to define what code to execute when the migration is run, and in the `down` method we define what code to execute when the migration is rolled back. Think of it like "do" and "undo."
 
-Another method is available to use besides `up` and `down`: `change`, which is more common for basic migrations. Our `CreateCats`migration would look like this, if we used the `change` method.
+Another method is available to use besides `up` and `down`: `change`, which is more common for basic migrations. Our `CreateAnimals`migration would look like this, if we used the `change` method.
 
 ```ruby
-# db/migrate/01_create_cats.rb
+# db/migrate/01_create_animals.rb
 
-class CreateCats < ActiveRecord::Migration
+class CreateAnimals < ActiveRecord::Migration
   def change
   end
 end
 
 ```
 
-Which is just short for do this, and then undo it on rollback. Let's look at creating the rest of the migration to generate our cats table and add some columns.
+Which is just short for do this, and then undo it on rollback. Let's look at creating the rest of the migration to generate our animals table and add some columns.
 
 ```ruby
-# db/migrate/01_create_cats.rb
+# db/migrate/01_create_animals.rb
 
-class CreateCats < ActiveRecord::Migration
+class CreateAnimals < ActiveRecord::Migration
   def up
-    create_table :cats do |t|
+    create_table :animals do |t|
       t.string :name
       t.integer :age
       t.integer :breed
@@ -62,7 +62,7 @@ class CreateCats < ActiveRecord::Migration
   end
 
   def down
-    drop_table :cats
+    drop_table :animals
   end
 end
 ```
@@ -89,30 +89,30 @@ Bundler.require
 
 ActiveRecord::Base.establish_connection(
   :adapter => "sqlite3",
-  :database => "db/cats.sqlite"
+  :database => "db/animals.sqlite"
 )
 ```
 
-This file is requiring the gems in our Gemfile and giving our program access to them. We're going to connect to our cats db, which will be created in the migration, via sqlite3 (the adapter).
+This file is requiring the gems in our Gemfile and giving our program access to them. We're going to connect to our animals db, which will be created in the migration, via sqlite3 (the adapter).
 
 Let's run `rake db:migrate`
 
 
-Take a look at `cat.rb`. Let's create an Cat class.
+Take a look at `animal.rb`. Let's create an Animal class.
 
 ```ruby
-# cat.rb
+# animal.rb
 
-class Cat
+class Animal
 end
 ```
 
 Next, we'll extend the class with `ActiveRecord::Base`
 
 ```ruby
-# cat.rb
+# animal.rb
 
-class Cat < ActiveRecord::Base
+class Animal < ActiveRecord::Base
 end
 ```
 
@@ -124,22 +124,22 @@ To test it out, let's use the raketask `rake console`, which we're created in th
 View that the class exists:
 
 ```ruby
-Cat
-#=> Cat (call 'Cat.connection' to establish a connection)
+Animal
+#=> Animal (call 'Animal.connection' to establish a connection)
 ```
 
 View that database columns:
 
 ```ruby
-Cat.column_names
+Animal.column_names
 #=> ["id", "name", "age", "breed"]
 ```
 
-Instantiate a new Cat named Maru, set her age to 3, save her to the database:
+Instantiate a new Animal named Maru, set her age to 3, save her to the database:
 
 ```ruby
-maru = Cat.new(name: "Maru")
-#=> #<Cat id: nil, name: "Maru", age: nil, breed: nil>
+maru = Animal.new(name: "Maru")
+#=> #<Animal id: nil, name: "Maru", age: nil, breed: nil>
 
 
 a.age = 30
@@ -152,23 +152,23 @@ a.save
 The `.new` method creates a new instance in memory, be in order for that instance to persist, we need to save it. If we want to create a new instance and save it all in on go, we can use `.create`.
 
 ```ruby
-Cat.create(name: "Hana", age: 1)
-#=> #<Cat id: 2, name: "Hana", age: 1, breed: nil>
+Animal.create(name: "Hana", age: 1)
+#=> #<Animal id: 2, name: "Hana", age: 1, breed: nil>
 ```
 
-Return an array of all Cats from the database:
+Return an array of all Animals from the database:
 
 ```ruby
-Cat.all
-=> [#<Cat:0x007f9a7287bc20 id: 1, name: "Maru", age: 3, breed: nil>,
- #<Cat:0x007f9a7287bae0 id: 2, name: "Hana", age: 1, breed: nil>]
+Animal.all
+=> [#<Animal id: 1, name: "Maru", age: 3, breed: nil>,
+ #<Animal id: 2, name: "Hana", age: 1, breed: nil>]
 ```
 
-Find an Cat by name:
+Find an Animal by name:
 
 ```ruby
-Cat.find_by(name: 'Hana')
-#=> #<Cat id: 2, name: "Hana", age: 1, breed: nil>
+Animal.find_by(name: 'Hana')
+#=> #<Animal id: 2, name: "Hana", age: 1, breed: nil>
 ```
 
 There are a number of methods you can now use to create, retrieve, update, and delete data from your database, and a whole lot more.
@@ -178,25 +178,25 @@ Take a look at these [CRUD methods](http://guides.rubyonrails.org/active_record_
 
 ## Using migrations to manipulate existing tables
 
-Here is another place where migrations really shine. Let's add a gender column to our cats table. Remember that ActiveRecord keeps track of what migrations we've already run, so adding it to our 01_create_cats.rb won't work because it won't get executed when we run our migrations again, unless we drop our entire table before rerunning the migration. But that isn't best practice, especially with a production database.
+Here is another place where migrations really shine. Let's add a gender column to our animals table. Remember that ActiveRecord keeps track of what migrations we've already run, so adding it to our 01_create_animals.rb won't work because it won't get executed when we run our migrations again, unless we drop our entire table before rerunning the migration. But that isn't best practice, especially with a production database.
 
-To make this change we're going to need a new migration, which we'll call `02_add_gender_to_cats.rb`.
+To make this change we're going to need a new migration, which we'll call `02_add_gender_to_animals.rb`.
 
 ```ruby
-# db/migrate/02_add_gender_to_cats.rb
+# db/migrate/02_add_gender_to_animals.rb
 
-class AddGenderToCats < ActiveRecord::Migration
+class AddGenderToAnimals < ActiveRecord::Migration
   def up
-    add_column :cats, :gender, :string
+    add_column :animals, :gender, :string
   end
   
   def down
-    remove_column :cats, :gender 
+    remove_column :animals, :gender 
   end
 end
 ```
 
-Pretty awesome, right? We basically just told ActiveRecord to add a column to the cats table, call it gender, and it's going to be a string.
+Pretty awesome, right? We basically just told ActiveRecord to add a column to the animals table, call it gender, and it's going to be a string.
 
 Notice how we incremented the number in the file name there? Imagine for a minute that you deleted your original database and wanted to execute the migrations again. ActiveRecord is going to execute each file, but it has to do so in some order and it happens to do that in alpha-numerical order. If we didn't have the numbers, our add_column migration would have tried to run first ('a' comes before 'c') and our artists table wouldn't have even been created yet! So we used some numbers to make sure they execute in order. In reality our two-digit system is very rudimentary.
 
@@ -209,7 +209,7 @@ Awesome! Now go back to the console: `rake console`
 and check it out:
 
 ```ruby
-Cat.column_names
+Animal.column_names
 #=> ["id", "name", "age", "breed", "gender"]
 ```
 
@@ -225,7 +225,7 @@ Then double check:
 
 
 ```ruby
-Cat.column_names
+Animal.column_names
 #=> ["id", "name", "age", "breed"]
 ```
 
@@ -233,9 +233,94 @@ Oh good, your job is saved. Thanks ActiveRecord! Now when the boss says it's act
 
 `rake db:migrate`
 
+We just notices we are only adding cats to our table but our table name is animal. Let's write a migration `03_rename_animals_to_cats.rb` in our migrate folder that changes the name of our table.
+
+```ruby
+# db/migrate/03_rename_animals_to_cats.rb
+
+class RenameAnimalsToCats < ActiveRecord::Migration
+  def up
+    rename_table :animals, :cats
+  end
+  
+  def down
+     rename_table :cats, :animals
+  end
+end
+```
+Before running the migration, we need to change the model declaration file manually and also change the `environment.rb`.
+
+```ruby
+require 'bundler/setup'
+Bundler.require
+
+ActiveRecord::Base.establish_connection(
+  :adapter => "sqlite3",
+  :database => "db/animal.sqlite"
+)
+
+require_relative 'cat.rb'
+```
+
+Let us assume we want to change the `name` attribute of our cats to `firstname`.
+
+Again we need to create a new migration for this.
+Because this is our fourth migration lets name it ``
+
+```ruby
+# db/migrate/04_rename_column_name_to_firstname.rb
+
+class RenameColumnNameToFirstname < ActiveRecord::Migration
+  def up
+    rename_column :cats, :name, :firstname
+  end
+  
+  def down
+    rename_column :cats, :firstname, :name
+  end
+end
+```
+After running `rake db:migrate` we should make sure that the migration work. Head over to the `rake console` and type `Cat.column_names`. 
 
 
+```ruby
+Cat.column_names
+=> ["id", "firstname", "age", "breed", "gender"]
+```
 
+
+Every cat should also have a owner. First create a new migration named `05_create_owners.rb`. The owners should only have a name attribute.
+
+
+```ruby
+# db/migrate/05_create_owners.rb
+
+class CreateOwners < ActiveRecord::Migration
+  def up
+    create_table :owners do |t|
+      t.string :name
+    end
+  end
+
+  def down
+    drop_table :owners
+  end
+end
+```
+Now create the `06_add_column_to_cats.rb` migration.
+
+```ruby
+class AddColumnToCats < ActiveRecord::Migration
+  def up
+    add_column :cats, :owner_id, :integer
+  end
+  
+  def down
+    remove_foreign_key :cats, :owner_id
+  end
+end
+```
+Now we have two table and every cat knows who its owner is.
 
 
 

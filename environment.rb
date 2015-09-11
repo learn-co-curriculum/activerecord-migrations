@@ -3,7 +3,7 @@ Bundler.require
 
 ActiveRecord::Base.establish_connection(
   :adapter => "sqlite3",
-  :database => "db/cats.sqlite"
+  :database => "db/animal.sqlite"
 )
 
 require_relative 'cat.rb'
