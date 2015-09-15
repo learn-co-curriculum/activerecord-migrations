@@ -316,19 +316,8 @@ class AddColumnToCats < ActiveRecord::Migration
   end
   
   def down
-    remove_foreign_key :cats, :owner_id
+    remove_column :cats, :owner_id
   end
 end
 ```
 Now we have two table and every cat knows who its owner is.
-
-
-
-
-
-
-
-
-
-
-
