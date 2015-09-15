@@ -178,7 +178,7 @@ Take a look at these [CRUD methods](http://guides.rubyonrails.org/active_record_
 
 ## Using migrations to manipulate existing tables
 
-Here is another place where migrations really shine. Let's add a gender column to our animals table. Remember that ActiveRecord keeps track of what migrations we've already run, so adding it to our 01_create_animals.rb won't work because it won't get executed when we run our migrations again, unless we drop our entire table before rerunning the migration. But that isn't best practice, especially with a production database.
+Here is another place where migrations really shine. Let's add a gender column to our animals table. Remember that ActiveRecord keeps track of what migrations we've already run, so adding it to our 01_create_animals.rb won't work because it won't get executed when we run our migrations again without dropping our entire table before rerunning the migration. But that isn't best practice, especially with a production database.
 
 To make this change we're going to need a new migration, which we'll call `02_add_gender_to_animals.rb`.
 
@@ -198,7 +198,7 @@ end
 
 Pretty awesome, right? We basically just told ActiveRecord to add a column to the animals table, call it gender, and it's going to be a string.
 
-Notice how we incremented the number in the file name there? Imagine for a minute that you deleted your original database and wanted to execute the migrations again. ActiveRecord is going to execute each file, but it has to do so in some order and it happens to do that in alpha-numerical order. If we didn't have the numbers, our add_column migration would have tried to run first ('a' comes before 'c') and our artists table wouldn't have even been created yet! So we used some numbers to make sure they execute in order. In reality our two-digit system is very rudimentary.
+Notice how we incremented the number in the file name there? Imagine for a minute that you deleted your original database and wanted to execute the migrations again. ActiveRecord is going to execute each file, but it has to do so in some order and it happens to do that in alpha-numerical order. If we didn't have the numbers, our add_column migration would have tried to run first ('a' comes before 'c') and our animals table wouldn't have even been created yet! So we used some numbers to make sure they execute in order. In reality our two-digit system is very rudimentary.
 
 Now that you've saved the migration, back to the terminal to run it:
 
@@ -316,19 +316,8 @@ class AddColumnToCats < ActiveRecord::Migration
   end
   
   def down
-    remove_foreign_key :cats, :owner_id
+    remove_column :cats, :owner_id
   end
 end
 ```
 Now we have two table and every cat knows who its owner is.
-
-
-
-
-
-
-
-
-
-
-
