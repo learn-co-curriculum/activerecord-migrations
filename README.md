@@ -35,6 +35,7 @@ end
 
 Here we're creating a class called `CreateAnimals` which inherits from ActiveRecord's `ActiveRecord::Migration` module. Within the class we have an `up` method to define what code to execute when the migration is run, and in the `down` method we define what code to execute when the migration is rolled back. Think of it like "do" and "undo."
 
+
 Another method is available to use besides `up` and `down`: `change`, which is more common for basic migrations. Our `CreateAnimals`migration would look like this, if we used the `change` method.
 
 ```ruby
@@ -47,7 +48,7 @@ end
 
 ```
 
-Which is just short for do this, and then undo it on rollback. Let's look at creating the rest of the migration to generate our animals table and add some columns.
+Which is just short for "do this, and then undo it on rollback". Let's look at creating the rest of the migration to generate our animals table and add some columns.
 
 ```ruby
 # db/migrate/01_create_animals.rb
@@ -67,19 +68,32 @@ class CreateAnimals < ActiveRecord::Migration
 end
 ```
 
-Here we've added the create_table method into our `up` method, and passed the name of the table we want to create as a symbol. 
+Here we've added the create_table method into our `up` method, and passed the name of the table we want to create as a symbol.
 
-To add columns to our table, we will write the data type on the left and on the right we will write the name we'd like to give our column. The only thing that we're missing is the primary key. 
+**NOTE:** Naming files and classes correctly is very important. Use the following naming conventions when using ActiveRecord:
 
-ActiveRecord will generate that column for us, and for each row added, a key will be auto incremented.
 
-### Running Migrations
+| Type            | Example                   |
+|-------          | ----                      |
+| Class file      | `Animal.rb`               |
+| Class           | `class Animal`            |
+| Table           | `create_table :animals `  | 
+| Migration       | `01_create_animals.rb`    |
+| Migration Class | `class CreateAnimals`     |
 
-The simplest way to run our migrations is with ActiveRecord's through a raketask that we're given through the activerecord gem. How do we access these?
+To add columns to our table, we use ActiveRecord's DSL iterator and use `t` (by convention) as a placeholder variable for the table. For each column, we then write `t.data_type column_name`, substituting the data type on the left and column name on the right. The only thing that we're missing is the primary key. 
 
-Run `rake -T` to see the list of commands we have. But before we can run `rake -T` we need to make sure we run `bundle install`.
+Luckily, ActiveRecord will take care of this for us by generating the primary key column for us. For each new row added to our table, a key will be auto incremented.
 
-Let's look the `Rakefile`. The way in which we get these commands as raketasks is through `require 'sinatra/activerecord/rake'`.
+### Running Migrations using Rake Tasks
+
+The simplest way to run our migrations is by using a Rake task that we're given through the ActiveRecord gem. How do we access these?
+
+Run `rake -T` to see the list of commands we have. (before running `rake -T`, make sure we run `bundle install`). It should look like this:
+
+![Rake Tasks](https://curriculum-content.s3.amazonaws.com/web-development/Sinatra/raketasks.png)
+
+Where do these commands come from? Let's look at our `Rakefile` (in the root of the project). The way in which we get these commands as Rake tasks is through `require 'sinatra/activerecord/rake'`.
 
 Now take a look at `environment.rb`, which our Rakefile also requires:
 
@@ -95,8 +109,11 @@ ActiveRecord::Base.establish_connection(
 
 This file is requiring the gems in our Gemfile and giving our program access to them. We're going to connect to our animals db, which will be created in the migration, via sqlite3 (the adapter).
 
-Let's run `rake db:migrate`
+In the console, run `rake db:migrate`
 
+![migration](https://curriculum-content.s3.amazonaws.com/web-development/Sinatra/migration.png)
+
+When you run rake `db:migrate`, the ActiveRecord migration is being converted in to SQL commands which are then fired against the database.
 
 Take a look at `animal.rb`. Let's create an Animal class.
 
@@ -107,7 +124,7 @@ class Animal
 end
 ```
 
-Next, we'll extend the class with `ActiveRecord::Base`
+Next, we'll extend the class with `ActiveRecord::Base`. This is very important, because it provides the link between the Animal class and the Animals table that we've built using ActiveRecord migrations.
 
 ```ruby
 # animal.rb
@@ -115,6 +132,8 @@ Next, we'll extend the class with `ActiveRecord::Base`
 class Animal < ActiveRecord::Base
 end
 ```
+
+
 
 To test it out, let's use the raketask `rake console`, which we're created in the `Rakefile`.
 
@@ -233,7 +252,7 @@ Oh good, your job is saved. Thanks ActiveRecord! Now when the boss says it's act
 
 `rake db:migrate`
 
-We just notices we are only adding cats to our table but our table name is animal. Let's write a migration `03_rename_animals_to_cats.rb` in our migrate folder that changes the name of our table.
+We just notices we are only adding cats to our table but our table name is animals. Let's write a migration `03_rename_animals_to_cats.rb` in our migrate folder that changes the name of our table.
 
 ```ruby
 # db/migrate/03_rename_animals_to_cats.rb
@@ -248,7 +267,7 @@ class RenameAnimalsToCats < ActiveRecord::Migration
   end
 end
 ```
-Before running the migration, we need to change the model declaration file manually and also change the `environment.rb`.
+Before running the migration, we need to change the model declaration file manually (change the `animals.rb` file to `cats.rb`, and the class name to Cat) and also change the `environment.rb` file to `require_relative 'cat.rb'` instead of `require_relative 'animal.rb'`.
 
 ```ruby
 require 'bundler/setup'
@@ -265,7 +284,7 @@ require_relative 'cat.rb'
 Let us assume we want to change the `name` attribute of our cats to `firstname`.
 
 Again we need to create a new migration for this.
-Because this is our fourth migration lets name it ``
+Because this is our fourth migration lets name it `04_rename_column_name_to_firstname.rb`
 
 ```ruby
 # db/migrate/04_rename_column_name_to_firstname.rb
@@ -280,7 +299,7 @@ class RenameColumnNameToFirstname < ActiveRecord::Migration
   end
 end
 ```
-After running `rake db:migrate` we should make sure that the migration work. Head over to the `rake console` and type `Cat.column_names`. 
+After running `rake db:migrate` we should make sure that the migration works. Head over to the `rake console` and type `Cat.column_names`. 
 
 
 ```ruby
@@ -289,7 +308,7 @@ Cat.column_names
 ```
 
 
-Every cat should also have a owner. First create a new migration named `05_create_owners.rb`. The owners should only have a name attribute.
+Every cat should also have a owner. Let's create a separate "Owners" table. First, create a new migration named `05_create_owners.rb`. The owners table should only have a name attribute.
 
 
 ```ruby
@@ -307,7 +326,7 @@ class CreateOwners < ActiveRecord::Migration
   end
 end
 ```
-Now create the `06_add_column_to_cats.rb` migration.
+Now create the `06_add_column_to_cats.rb` migration, and add the owner_id column to the cats table. This column will serve as the foreign key joining the cats table to the owners table.
 
 ```ruby
 class AddColumnToCats < ActiveRecord::Migration
@@ -320,4 +339,4 @@ class AddColumnToCats < ActiveRecord::Migration
   end
 end
 ```
-Now we have two table and every cat knows who its owner is.
+Now we have two tables and every cat knows who its owner is!
