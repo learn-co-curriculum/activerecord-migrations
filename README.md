@@ -108,7 +108,7 @@ class Animal
 end
 ```
 
-Next, we'll extend the class with `ActiveRecord::Base`
+Next, we'll extend the class with `ActiveRecord::Base`. This is very important, because it provides the link between the Animal class and the Animals table that we've built using ActiveRecord migrations.
 
 ```ruby
 # animal.rb
@@ -116,6 +116,8 @@ Next, we'll extend the class with `ActiveRecord::Base`
 class Animal < ActiveRecord::Base
 end
 ```
+
+
 
 To test it out, let's use the raketask `rake console`, which we're created in the `Rakefile`.
 
