@@ -35,6 +35,7 @@ end
 
 Here we're creating a class called `CreateAnimals` which inherits from ActiveRecord's `ActiveRecord::Migration` module. Within the class we have an `up` method to define what code to execute when the migration is run, and in the `down` method we define what code to execute when the migration is rolled back. Think of it like "do" and "undo."
 
+
 Another method is available to use besides `up` and `down`: `change`, which is more common for basic migrations. Our `CreateAnimals`migration would look like this, if we used the `change` method.
 
 ```ruby
@@ -68,6 +69,17 @@ end
 ```
 
 Here we've added the create_table method into our `up` method, and passed the name of the table we want to create as a symbol.
+
+**NOTE:** Naming files and classes correctly is very important. Use the following naming conventions when using ActiveRecord:
+
+
+| Type            | Example                   |
+|-------          | ----                      |
+| Class file      | `Animal.rb`               |
+| Class           | `class Animal`            |
+| Table           | `create_table :animals `  | 
+| Migration       | `01_create_animals.rb`    |
+| Migration Class | `class CreateAnimals`     |
 
 To add columns to our table, we use ActiveRecord's DSL iterator and use `t` (by convention) as a placeholder variable for the table. For each column, we then write `t.data_type column_name`, substituting the data type on the left and column name on the right. The only thing that we're missing is the primary key. 
 
