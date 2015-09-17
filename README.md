@@ -99,6 +99,10 @@ This file is requiring the gems in our Gemfile and giving our program access to 
 
 In the console, run `rake db:migrate`
 
+![migration](https://curriculum-content.s3.amazonaws.com/web-development/Sinatra/migration.png)
+
+When you run rake `db:migrate`, the ActiveRecord migration is being converted in to SQL commands which are then fired against the database.
+
 Take a look at `animal.rb`. Let's create an Animal class.
 
 ```ruby
