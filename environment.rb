@@ -6,4 +6,4 @@ ActiveRecord::Base.establish_connection(
   :database => "db/animal.sqlite"
 )
 
-require_relative 'animal.rb'
+# require_relative 'animal.rb'
