@@ -255,7 +255,7 @@ class RenameAnimalsToCats < ActiveRecord::Migration
   end
 end
 ```
-Before running the migration, we need to change the model declaration file manually (change the `animals.rb` file to `cats.rb`, and the class name to Cat) and also change the `environment.rb` file to `require_relative cat.rb` instead of `require_relative animal.rb`.
+Before running the migration, we need to change the model declaration file manually (change the `animals.rb` file to `cats.rb`, and the class name to Cat) and also change the `environment.rb` file to `require_relative 'cat.rb'` instead of `require_relative 'animal.rb'`.
 
 ```ruby
 require 'bundler/setup'
@@ -272,7 +272,7 @@ require_relative 'cat.rb'
 Let us assume we want to change the `name` attribute of our cats to `firstname`.
 
 Again we need to create a new migration for this.
-Because this is our fourth migration lets name it ``
+Because this is our fourth migration lets name it `04_rename_column_name_to_firstname.rb`
 
 ```ruby
 # db/migrate/04_rename_column_name_to_firstname.rb
@@ -287,7 +287,7 @@ class RenameColumnNameToFirstname < ActiveRecord::Migration
   end
 end
 ```
-After running `rake db:migrate` we should make sure that the migration work. Head over to the `rake console` and type `Cat.column_names`. 
+After running `rake db:migrate` we should make sure that the migration works. Head over to the `rake console` and type `Cat.column_names`. 
 
 
 ```ruby
@@ -296,7 +296,7 @@ Cat.column_names
 ```
 
 
-Every cat should also have a owner. First create a new migration named `05_create_owners.rb`. The owners should only have a name attribute.
+Every cat should also have a owner. Let's create a separate "Owners" table. First, create a new migration named `05_create_owners.rb`. The owners table should only have a name attribute.
 
 
 ```ruby
@@ -314,7 +314,7 @@ class CreateOwners < ActiveRecord::Migration
   end
 end
 ```
-Now create the `06_add_column_to_cats.rb` migration.
+Now create the `06_add_column_to_cats.rb` migration, and add the owner_id column to the cats table. This column will serve as the foreign key joining the cats table to the owners table.
 
 ```ruby
 class AddColumnToCats < ActiveRecord::Migration
@@ -327,4 +327,4 @@ class AddColumnToCats < ActiveRecord::Migration
   end
 end
 ```
-Now we have two table and every cat knows who its owner is.
+Now we have two tables and every cat knows who its owner is!
