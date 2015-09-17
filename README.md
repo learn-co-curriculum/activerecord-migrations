@@ -73,13 +73,15 @@ To add columns to our table, we use ActiveRecord's DSL iterator and use `t` (by 
 
 Luckily, ActiveRecord will take care of this for us by generating the primary key column for us. For each new row added to our table, a key will be auto incremented.
 
-### Running Migrations
+### Running Migrations using Rake Tasks
 
-The simplest way to run our migrations is with ActiveRecord's through a raketask that we're given through the activerecord gem. How do we access these?
+The simplest way to run our migrations is by using a Rake task that we're given through the ActiveRecord gem. How do we access these?
 
-Run `rake -T` to see the list of commands we have. But before we can run `rake -T` we need to make sure we run `bundle install`.
+Run `rake -T` to see the list of commands we have. (before running `rake -T`, make sure we run `bundle install`). It should look like this:
 
-Let's look the `Rakefile`. The way in which we get these commands as raketasks is through `require 'sinatra/activerecord/rake'`.
+![Rake Tasks](https://curriculum-content.s3.amazonaws.com/web-development/Sinatra/raketasks.png)
+
+Where do these commands come from? Let's look at our `Rakefile` (in the root of the project). The way in which we get these commands as Rake tasks is through `require 'sinatra/activerecord/rake'`.
 
 Now take a look at `environment.rb`, which our Rakefile also requires:
 
@@ -95,8 +97,7 @@ ActiveRecord::Base.establish_connection(
 
 This file is requiring the gems in our Gemfile and giving our program access to them. We're going to connect to our animals db, which will be created in the migration, via sqlite3 (the adapter).
 
-Let's run `rake db:migrate`
-
+In the console, run `rake db:migrate`
 
 Take a look at `animal.rb`. Let's create an Animal class.
 
