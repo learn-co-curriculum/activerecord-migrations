@@ -240,7 +240,7 @@ Oh good, your job is saved. Thanks ActiveRecord! Now when the boss says it's act
 
 `rake db:migrate`
 
-We just notices we are only adding cats to our table but our table name is animal. Let's write a migration `03_rename_animals_to_cats.rb` in our migrate folder that changes the name of our table.
+We just notices we are only adding cats to our table but our table name is animals. Let's write a migration `03_rename_animals_to_cats.rb` in our migrate folder that changes the name of our table.
 
 ```ruby
 # db/migrate/03_rename_animals_to_cats.rb
@@ -255,7 +255,7 @@ class RenameAnimalsToCats < ActiveRecord::Migration
   end
 end
 ```
-Before running the migration, we need to change the model declaration file manually and also change the `environment.rb`.
+Before running the migration, we need to change the model declaration file manually (change the `animals.rb` file to `cats.rb`, and the class name to Cat) and also change the `environment.rb` file to `require_relative cat.rb` instead of `require_relative animal.rb`.
 
 ```ruby
 require 'bundler/setup'
