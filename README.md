@@ -47,7 +47,7 @@ end
 
 ```
 
-Which is just short for do this, and then undo it on rollback. Let's look at creating the rest of the migration to generate our animals table and add some columns.
+Which is just short for "do this, and then undo it on rollback". Let's look at creating the rest of the migration to generate our animals table and add some columns.
 
 ```ruby
 # db/migrate/01_create_animals.rb
@@ -67,11 +67,11 @@ class CreateAnimals < ActiveRecord::Migration
 end
 ```
 
-Here we've added the create_table method into our `up` method, and passed the name of the table we want to create as a symbol. 
+Here we've added the create_table method into our `up` method, and passed the name of the table we want to create as a symbol.
 
-To add columns to our table, we will write the data type on the left and on the right we will write the name we'd like to give our column. The only thing that we're missing is the primary key. 
+To add columns to our table, we use ActiveRecord's DSL iterator and use `t` (by convention) as a placeholder variable for the table. For each column, we then write `t.data_type column_name`, substituting the data type on the left and column name on the right. The only thing that we're missing is the primary key. 
 
-ActiveRecord will generate that column for us, and for each row added, a key will be auto incremented.
+Luckily, ActiveRecord will take care of this for us by generating the primary key column for us. For each new row added to our table, a key will be auto incremented.
 
 ### Running Migrations
 
