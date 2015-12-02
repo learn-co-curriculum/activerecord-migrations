@@ -340,3 +340,5 @@ class AddColumnToCats < ActiveRecord::Migration
 end
 ```
 Now we have two tables and every cat knows who its owner is!
+
+<a href='https://learn.co/lessons/activerecord-migrations' data-visibility='hidden'>View this lesson on Learn.co</a>
