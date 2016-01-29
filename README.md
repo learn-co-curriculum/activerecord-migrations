@@ -341,4 +341,4 @@ end
 ```
 Now we have two tables and every cat knows who its owner is!
 
-<a href='https://learn.co/lessons/activerecord-migrations' data-visibility='hidden'>View this lesson on Learn.co</a>
+<p data-visibility='hidden'>View <a href='https://learn.co/lessons/activerecord-migrations' title='ActiveRecord Migrations'>ActiveRecord Migrations</a> on Learn.co and start learning to code for free.</p>
